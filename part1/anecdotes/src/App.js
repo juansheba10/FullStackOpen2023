@@ -10,21 +10,30 @@ const anecdotes = [
 ]
 
 
-const App = (props) => {
+const App = () => {
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))  // Inicializar votos
 
-  // Función para obtener un número aleatorio entre 0 y el tamaño del array de anécdotas - 1.
-  const randomAnecdote = () => {
-    const randomIndex = Math.floor(Math.random() * anecdotes.length)
-    setSelected(randomIndex)
+  const handleVote = () => {
+    const newVotes = [...votes]  // Copia del estado actual de votos
+    newVotes[selected] += 1     // Incrementar el voto de la anécdota actual
+    setVotes(newVotes)          // Actualizar el estado de votos
+  }
+
+  const handleNext = () => {
+    // Elegir una anécdota aleatoria
+    const random = Math.floor(Math.random() * anecdotes.length)
+    setSelected(random)
   }
 
   return (
     <div>
+      {anecdotes[selected]}
       <div>
-        {anecdotes[selected]}
+        has {votes[selected]} votes
       </div>
-      <button onClick={randomAnecdote}>Mostrar anécdota aleatoria</button>
+      <button onClick={handleVote}>vote</button>
+      <button onClick={handleNext}>next anecdote</button>
     </div>
   )
 }
