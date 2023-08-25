@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 // Component Filter
 const Filter = ({ value, onChange }) => {
@@ -45,12 +46,23 @@ const Persons = ({ persons }) => {
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-1234567' }
-  ])
+  const [persons, setPersons] = useState([]) // Inicializamos con un array vacío
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+
+  // Hook de efecto para obtener datos del servidor
+  useEffect(() => {
+    console.log('effect')
+    
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        console.log('promise fulfilled')
+        setPersons(response.data)
+      })
+
+  }, [])  
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
