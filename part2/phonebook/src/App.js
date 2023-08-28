@@ -78,21 +78,32 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-
+  
     if (newName === '' || newNumber === '') {
       alert("Please enter both name and number.")
       return
     }
-
+  
     if (persons.some(person => person.name === newName)) {
       alert(`${newName} is already added to phonebook`)
     } else {
       const newPerson = { name: newName, number: newNumber }
-      setPersons(persons.concat(newPerson))
-      setNewName('')
-      setNewNumber('')
+      
+      // Enviar el nuevo contacto al servidor backend
+      axios.post('http://localhost:3001/persons', newPerson)
+        .then(response => {
+          // Actualizar el estado con el contacto devuelto por el servidor
+          setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+        })
+        .catch(error => {
+          console.error("Error saving the person:", error)
+          alert("There was an error saving the person. Please try again.")
+        })
     }
   }
+  
 
   const filteredPersons = persons.filter(person =>
     person.name.toLowerCase().includes(searchTerm.toLowerCase())
