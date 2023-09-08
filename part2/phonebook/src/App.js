@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import personsServices from './personServices';
-
+import Notification from './Notification';
 
 const App = () => {
   const [persons, setPersons] = useState([]); // Inicializamos con un array vacío
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [notification, setNotification] = useState({ message: null, type: 'error' });
+
 
   const Filter = ({ value, onChange }) => {
     return (
@@ -104,6 +106,16 @@ const App = () => {
             setPersons(persons.map(person => person.id !== existingPerson.id ? person : returnedPerson));
             setNewName('');
             setNewNumber('');
+            setNotification({
+              message: 'Usuario agregado/actualizado exitosamente',
+              type: 'success'
+            });
+            
+            // Configura un temporizador para eliminar la notificación después de unos segundos
+            setTimeout(() => {
+              setNotification({ message: null });
+            }, 5000); // Desaparece después de 5 segundos
+            
           })
           .catch(error => {
             console.log('Error updating the number:', error);
@@ -117,6 +129,16 @@ const App = () => {
           setPersons(persons.concat(returnedPerson));
           setNewName('');
           setNewNumber('');
+          setNotification({
+            message: 'Usuario agregado/actualizado exitosamente',
+            type: 'success'
+          });
+          
+          // Configura un temporizador para eliminar la notificación después de unos segundos
+          setTimeout(() => {
+            setNotification({ message: null });
+          }, 5000); // Desaparece después de 5 segundos
+          
         })
         .catch(error => {
           console.log('Error adding the person:', error);
@@ -150,6 +172,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter value={searchTerm} onChange={handleSearchChange} />
       <h3>Add a new</h3>
+      <Notification message={notification.message} type={notification.type} />
       <PersonForm 
         onSubmit={addPerson} 
         nameValue={newName} 
