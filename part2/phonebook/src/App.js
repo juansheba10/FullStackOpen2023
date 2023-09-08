@@ -86,29 +86,44 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
-
+  
     if (newName === '' || newNumber === '') {
       alert("Please enter both name and number.");
       return;
     }
-
-    if (persons.some(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+  
+    const existingPerson = persons.find(person => person.name === newName);
+  
+    if (existingPerson) {
+      const shouldUpdate = window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`);
+  
+      if (shouldUpdate) {
+        const updatedPerson = { ...existingPerson, number: newNumber };
+        personsServices.update(existingPerson.id, updatedPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== existingPerson.id ? person : returnedPerson));
+            setNewName('');
+            setNewNumber('');
+          })
+          .catch(error => {
+            console.log('Error updating the number:', error);
+          });
+      }
+  
     } else {
       const newPerson = { name: newName, number: newNumber };
-
-      // Aquí usamos el módulo para guardar en el backend
       personsServices.create(newPerson)
-        .then(response => {
-          setPersons(persons.concat(response.data));
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson));
           setNewName('');
           setNewNumber('');
         })
         .catch(error => {
-          console.error("Error adding person:", error);
+          console.log('Error adding the person:', error);
         });
     }
   }
+  
 
   const deletePersonHandler = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
@@ -126,8 +141,9 @@ const App = () => {
   
 
   const filteredPersons = persons.filter(person =>
-    person.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    person.name && person.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
 
   return (
     <div>

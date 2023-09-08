@@ -22,7 +22,8 @@ const remove = (id) => {
 
 const deletePerson = (id) => {
     return axios.delete(`http://localhost:3001/persons/${id}`);
-  };  
+};  
+  
 
 // Exportamos todas las funciones
 export default {
