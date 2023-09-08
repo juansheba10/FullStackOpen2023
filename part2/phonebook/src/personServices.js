@@ -20,10 +20,15 @@ const remove = (id) => {
     return axios.delete(`${baseUrl}/${id}`);
 }
 
+const deletePerson = (id) => {
+    return axios.delete(`http://localhost:3001/persons/${id}`);
+  };  
+
 // Exportamos todas las funciones
 export default {
     getAll,
     create,
     update,
-    remove
+    remove,
+    deletePerson
 }

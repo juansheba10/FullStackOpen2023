@@ -34,23 +34,31 @@ const App = () => {
   }
   
   // Component Person
-  const Person = ({ name, number }) => {
+  const Person = ({ name, number, onDelete }) => {
     return (
-      <li>{name} {number}</li>
-    )
-  }
+      <li>
+        {name} {number} <button onClick={onDelete}>Delete</button>
+      </li>
+    );
+  };
+  
   
   // Component Persons
-  const Persons = ({ persons }) => {
+  const Persons = ({ persons, onDelete }) => {
     return (
       <ul>
-        {persons.map((person, index) => 
-          <Person key={index} name={person.name} number={person.number} />
-        )}
+        {persons.map(person => (
+          <Person 
+            key={person.id} 
+            name={person.name} 
+            number={person.number} 
+            onDelete={() => onDelete(person.id, person.name)} 
+          />
+        ))}
       </ul>
-    )
-  }
-
+    );
+  };
+  
   useEffect(() => {
     console.log('effect');
     
@@ -102,6 +110,21 @@ const App = () => {
     }
   }
 
+  const deletePersonHandler = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      personsServices
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id));
+        })
+        .catch(error => {
+          alert(`The person was already deleted from the server.`);
+          setPersons(persons.filter(person => person.id !== id));
+        });
+    }
+  };
+  
+
   const filteredPersons = persons.filter(person =>
     person.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -119,7 +142,7 @@ const App = () => {
         onNumberChange={handleNumberChange} 
       />
       <h3>Numbers</h3>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} onDelete={deletePersonHandler} />
     </div>
   )
 }
