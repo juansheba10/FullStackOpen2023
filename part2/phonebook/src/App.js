@@ -119,7 +119,16 @@ const App = () => {
           })
           .catch(error => {
             console.log('Error updating the number:', error);
+            
+            setNotification({
+              message: 'Error al actualizar el usuario. Puede que el usuario ya haya sido eliminado.',
+              type: 'error'
+            });
+            setTimeout(() => {
+              setNotification({ message: null });
+            }, 5000);
           });
+          
       }
   
     } else {
@@ -142,7 +151,16 @@ const App = () => {
         })
         .catch(error => {
           console.log('Error adding the person:', error);
+          
+          setNotification({
+            message: 'Error al agregar el usuario. Por favor intente de nuevo.',
+            type: 'error'
+          });
+          setTimeout(() => {
+            setNotification({ message: null });
+          }, 5000);
         });
+        
     }
   }
   
@@ -155,9 +173,17 @@ const App = () => {
           setPersons(persons.filter(person => person.id !== id));
         })
         .catch(error => {
-          alert(`The person was already deleted from the server.`);
-          setPersons(persons.filter(person => person.id !== id));
+          console.log(`Error deleting the person with id ${id}:`, error);
+          
+          setNotification({
+            message: `Error al eliminar el usuario. Puede que el usuario ya haya sido eliminado.`,
+            type: 'error'
+          });
+          setTimeout(() => {
+            setNotification({ message: null });
+          }, 5000);
         });
+        
     }
   };
   

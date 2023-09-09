@@ -3,7 +3,7 @@
 import React from 'react';
 import './Notificacion.css';
 
-const Notification = ({ message, type = 'error' }) => {
+const Notification = ({ message, type }) => {
   if (message === null) {
     return null;
   }
@@ -13,6 +13,7 @@ const Notification = ({ message, type = 'error' }) => {
       {message}
     </div>
   );
-}
+};
+
 
 export default Notification;
