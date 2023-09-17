@@ -1,6 +1,11 @@
 const express = require('express')
+const morgan = require('morgan');
+
 const app = express()
+app.use(morgan('tiny'));
+
 app.use(express.json());
+
 
 
 let persons = [
@@ -26,7 +31,17 @@ let persons = [
       },
 ]
   
-  app.get('/api/persons', (request, response) => {
+morgan.token('post-data', function (req) {
+  if (req.method === 'POST') {
+      return JSON.stringify(req.body);
+  }
+  return null;
+});
+
+// Usar morgan con la configuración personalizada
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-data'));
+ 
+app.get('/api/persons', (request, response) => {
     response.json(persons)
   })
 
